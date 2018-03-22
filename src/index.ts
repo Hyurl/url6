@@ -49,10 +49,10 @@ export class URL {
 
         this.protocol = !noProtocol && urlObj.protocol || undefined;
         this.slashes = urlObj.slashes || false;
-        this.auth = urlObj.auth;
-        this.host = urlObj.host;
-        this.path = urlObj.path;
-        this.hash = urlObj.hash;
+        this.auth = urlObj.auth || undefined;
+        this.host = urlObj.host || undefined;
+        this.path = urlObj.path || undefined;
+        this.hash = urlObj.hash || undefined;
     }
 
     get href(): string {
