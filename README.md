@@ -1,6 +1,6 @@
 # URL6
 
-**A more practical URL parser.**
+**A more practical URL parser for Node.js 6.0+.**
 
 ## Install
 
