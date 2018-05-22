@@ -32,7 +32,7 @@ describe("new URL()", function () {
         url.port = 80; // change port
         url.query.author = "Ayon Lee"; // modify query object.
 
-        assert.deepStrictEqual(Object.assign({}, url.inspect()), {
+        assert.deepStrictEqual(Object.assign({}, url[inspect]()), {
             href: 'http://root:123456@github.com/dir/filename.html?lang=en-US&author=Ayon%20Lee#id',
             protocol: 'http:',
             slashes: true,
