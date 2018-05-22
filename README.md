@@ -1,6 +1,6 @@
 # URL6
 
-**A more practical URL parser for Node.js 6.0+.**
+**A more practical URL parser for Node.js that conbines new and lagacy APIs.**
 
 ## Install
 
@@ -52,5 +52,5 @@ If any of these properties is not defined, it's value would be `undefined`
 (`url.query` would be `null`) or an empty string, and if the value is 
 changed, other related properties will be modified as well.
 
-This module is meant to bring some features from Node.js 8.0+ to Node.js 6.X, 
-and it cannot be run in browser, use native `URL` instead.
+This module is meant to bring some features from Node.js 8.0+ to Node.js 6.X 
+or even lower versions, it cannot be run in browser, use native `URL` instead.

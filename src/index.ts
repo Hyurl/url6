@@ -1,6 +1,7 @@
 import "source-map-support/register";
 import * as url from "url";
 import * as qs from "qs";
+var inspect: symbol | string = require("util").inspect.custom || "inspect";
 
 const UrlProps = [
     "href",
@@ -103,7 +104,7 @@ export class URL {
 
     get host(): string {
         let host = this.hostname;
-        if(this.port && this.port !== 80) host += ":" + this.port;
+        if (this.port && this.port !== 80) host += ":" + this.port;
         return host;
     }
 
@@ -159,11 +160,13 @@ export class URL {
         return this.toString();
     }
 
-    protected inspect() {
-        let res = new (class URL {});
+    protected [inspect]() {
+        let res = new (function URL() { });
         for (let prop of UrlProps) {
             res[prop] = this[prop];
         }
         return res;
     }
 }
+
+export default URL;

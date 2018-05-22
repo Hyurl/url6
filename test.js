@@ -1,11 +1,13 @@
-const { URL } = require("./");
+const URL = require("./").default;
 const assert = require("assert");
+var inspect = require("util").inspect.custom || "inspect";
 
-describe("new URL()", () => {
+describe("new URL()", function () {
     var url = new URL("https://root:123456@example.com:443/dir/filename.html?lang=en-US#id");
 
-    it("should initate a new URL instance as expected", () => {
-        assert.deepStrictEqual(Object.assign({}, url.inspect()), {
+    it("should initate a new URL instance as expected", function () {
+        assert.equal(url[inspect]().constructor.name, "URL");
+        assert.deepStrictEqual(Object.assign({}, url[inspect]()), {
             href: 'https://root:123456@example.com:443/dir/filename.html?lang=en-US#id',
             protocol: 'https:',
             slashes: true,
@@ -24,7 +26,7 @@ describe("new URL()", () => {
         });
     });
 
-    it("should modified url properties as expected", () => {
+    it("should modified url properties as expected", function () {
         url.protocol = "http:"; // change protocol
         url.hostname = "github.com"; // change hostname
         url.port = 80; // change port
