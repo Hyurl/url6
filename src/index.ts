@@ -23,19 +23,19 @@ const UrlProps = [
 
 export class URL {
     /** with trailing `:`. */
-    protocol: string;
+    protocol?: string;
     /** wheter `//` appears after the `protocol`. */
-    slashes: boolean;
-    username: string;
-    password: string;
+    slashes?: boolean;
+    username?: string;
+    password?: string;
     /** without trailing `port` number. */
-    hostname: string;
-    port: number;
+    hostname?: string;
+    port?: number;
     /** without trailing `search` string. */
-    pathname: string;
+    pathname?: string;
     /** parsed by [qs](https://www.npmjs.com/package/qs) module. */
-    query: { [key: string]: string };
-    hash: string;
+    query?: { [key: string]: string };
+    hash?: string;
 
     constructor(input?: string) {
         if (input) this.parse(input);

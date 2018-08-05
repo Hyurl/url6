@@ -1,6 +1,6 @@
 {
   "name": "url6",
-  "version": "6.0.2",
+  "version": "6.0.3",
   "description": "A more practical URL parser for Node.js that conbines new and lagacy APIs.",
   "main": "dist/index.js",
   "types": "src/index.ts",
