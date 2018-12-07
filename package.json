@@ -1,6 +1,6 @@
 {
   "name": "url6",
-  "version": "6.0.3",
+  "version": "6.0.4",
   "description": "A more practical URL parser for Node.js that conbines new and lagacy APIs.",
   "main": "dist/index.js",
   "types": "src/index.ts",
@@ -27,10 +27,10 @@
   "license": "MIT",
   "dependencies": {
     "@types/qs": "^6.5.1",
-    "qs": "^6.5.1",
-    "source-map-support": "^0.5.4"
+    "qs": "^6.5.1"
   },
   "devDependencies": {
+    "@types/node": "^10.12.12",
     "mocha": "^5.1.1"
   },
   "engines": {

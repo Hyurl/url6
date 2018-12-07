@@ -1,4 +1,3 @@
-import "source-map-support/register";
 import * as url from "url";
 import * as qs from "qs";
 var inspect: symbol | string = require("util").inspect.custom || "inspect";

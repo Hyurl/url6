@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-require("source-map-support/register");
 var url = require("url");
 var qs = require("qs");
 var inspect = require("util").inspect.custom || "inspect";
