@@ -9,8 +9,13 @@
         "removeComments": true,
         "sourceMap": true,
         "noUnusedLocals": true,
-        "noUnusedParameters": true,
-        "pretty": true
+        "noUnusedParameters": false,
+        "experimentalDecorators": true,
+        "pretty": true,
+        "lib": [
+            "es5",
+            "es2015.symbol"
+        ]
     },
     "files": [
         "src/index.ts"

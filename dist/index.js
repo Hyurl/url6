@@ -1,115 +1,187 @@
 "use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var url = require("url");
 var qs = require("qs");
 var inspect = require("util").inspect.custom || "inspect";
+var protocol = Symbol("protocol");
+var slashes = Symbol("slashes");
+var port = Symbol("port");
+var pathname = Symbol("pathname");
+var hash = Symbol("hash");
+var query = Symbol("query");
 var UrlProps = [
-    "href",
     "protocol",
-    "slashes",
-    "auth",
     "username",
     "password",
-    "host",
     "hostname",
     "port",
-    "origin",
-    "path",
     "pathname",
     "search",
-    "query",
-    "hash"
+    "hash",
+    "host",
+    "href",
+    "origin"
 ];
+function enumerable(target, prop, desc) {
+    desc.enumerable = true;
+}
 var URL = (function () {
-    function URL(input) {
-        if (input)
-            this.parse(input);
-        else
-            this.slashes = true;
+    function URL(input, base) {
+        base && (input = base + input);
+        input ? this.parse(input) : (this[slashes] = true);
     }
     URL.prototype.parse = function (input) {
         var noProtocol = input.slice(0, 2) == "//";
-        if (noProtocol)
-            input = "http:" + input;
+        noProtocol && (input = "http:" + input);
         var urlObj = url.parse(input);
-        this.protocol = !noProtocol && urlObj.protocol || undefined;
-        this.slashes = urlObj.slashes || false;
-        this.auth = urlObj.auth || undefined;
-        this.host = urlObj.host || undefined;
-        this.path = urlObj.path || undefined;
-        this.hash = urlObj.hash || undefined;
+        if (noProtocol && urlObj.port === "443") {
+            this[protocol] = "https:";
+        }
+        else {
+            this[protocol] = urlObj.protocol;
+        }
+        this[slashes] = urlObj.slashes || false;
+        var _a = (urlObj.auth || "").split(":"), _b = _a[0], username = _b === void 0 ? "" : _b, _c = _a[1], password = _c === void 0 ? "" : _c;
+        this.username = username || "";
+        this.password = password || "";
+        if (urlObj.host && urlObj.host[0] === "[") {
+            this.hostname = "[" + urlObj.hostname + "]";
+        }
+        else {
+            this.hostname = urlObj.hostname || "";
+        }
+        this[port] = urlObj.port || "";
+        this[pathname] = urlObj.pathname || "/";
+        this[hash] = urlObj.hash || "";
+        this[query] = qs.parse(urlObj.query || "");
     };
-    Object.defineProperty(URL.prototype, "href", {
+    Object.defineProperty(URL.prototype, "protocol", {
         get: function () {
-            return this.toString();
+            return this[protocol];
         },
         set: function (value) {
-            this.parse(value);
+            if (value[value.length - 1] !== ":") {
+                value += ":";
+            }
+            this[protocol] = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(URL.prototype, "slashes", {
+        get: function () {
+            return this[slashes];
+        },
+        set: function (value) {
+            this[slashes] = value;
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(URL.prototype, "auth", {
         get: function () {
-            var str;
-            if (this.username) {
-                str = this.username;
-                if (this.password)
-                    str += ":" + this.password;
-            }
-            return str;
+            var auth = [];
+            this.username && auth.push(this.username);
+            this.password && auth.push(this.password);
+            return auth.join(":");
         },
         set: function (value) {
-            if (typeof value == "string") {
-                var pair = value.split(":");
-                this.username = pair[0];
-                this.password = pair[1];
-            }
-            else {
-                this.username = undefined;
-                this.password = undefined;
-            }
+            var _a = (value || "").split(":"), _b = _a[0], username = _b === void 0 ? "" : _b, _c = _a[1], password = _c === void 0 ? "" : _c;
+            this.username = username;
+            this.password = password;
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(URL.prototype, "origin", {
+    Object.defineProperty(URL.prototype, "port", {
         get: function () {
-            return (this.protocol || "")
-                + (this.slashes ? "//" : "")
-                + (this.host || "");
-        },
-        set: function (value) {
-            var matches = value && value.match(/(.+?:)\/\/(.+)|(.+?:)(.+)/);
-            if (matches) {
-                this.protocol = matches[1] || matches[3];
-                this.host = matches[2] || matches[4];
+            if ((this.protocol === "http:" && this[port] === "80") ||
+                (this.protocol === "https:" && this[port] === "443")) {
+                return "";
             }
             else {
-                this.protocol = undefined;
-                this.host = undefined;
+                return this[port];
             }
+        },
+        set: function (value) {
+            this[port] = String(value);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(URL.prototype, "pathname", {
+        get: function () {
+            return this[pathname];
+        },
+        set: function (value) {
+            if (value[0] !== "/") {
+                value = "/" + value;
+            }
+            this[pathname] = value;
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(URL.prototype, "host", {
         get: function () {
-            var host = this.hostname;
-            if (this.port && this.port !== 80)
-                host += ":" + this.port;
-            return host;
+            return this.hostname + (this.port ? ":" + this.port : "");
         },
         set: function (value) {
-            var matches = value && value.match(/\[(.+)\]:(\d+)|(.+):(\d+)|(.+)/);
-            if (matches) {
-                this.hostname = matches[1] || matches[3] || matches[5];
-                this.port = parseInt(matches[2] || matches[4]) || undefined;
+            var _a = this, protocol = _a.protocol, slashes = _a.slashes;
+            var urlObj = url.parse(protocol + (slashes ? "//" : "") + value);
+            if (urlObj.host && urlObj.host[0] === "[") {
+                this.hostname = "[" + urlObj.hostname + "]";
             }
             else {
-                this.hostname = undefined;
-                this.port = undefined;
+                this.hostname = urlObj.hostname || "";
             }
+            this.port = urlObj.port || "";
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(URL.prototype, "search", {
+        get: function () {
+            return qs.stringify(this.query, { addQueryPrefix: true });
+        },
+        set: function (value) {
+            this.query = qs.parse(value, { ignoreQueryPrefix: true });
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(URL.prototype, "hash", {
+        get: function () {
+            return this[hash];
+        },
+        set: function (value) {
+            if (value[0] !== "#") {
+                value = "#" + value;
+            }
+            this[hash] = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(URL.prototype, "query", {
+        get: function () {
+            return this[query];
+        },
+        set: function (value) {
+            this[query] = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(URL.prototype, "origin", {
+        get: function () {
+            return this.protocol + (this[slashes] ? "//" : "") + this.host;
         },
         enumerable: true,
         configurable: true
@@ -121,54 +193,71 @@ var URL = (function () {
         set: function (value) {
             if (value && typeof value == "string") {
                 var i = value.indexOf("?");
-                this.pathname = (i !== -1 ? value.slice(0, i) : value) || undefined;
-                this.search = i !== -1 ? value.slice(i) : undefined;
+                this.pathname = (i !== -1 ? value.slice(0, i) : value) || "";
+                this.search = i !== -1 ? value.slice(i) : "";
             }
             else {
-                this.pathname = undefined;
-                this.search = undefined;
+                this.pathname = "";
+                this.search = "";
             }
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(URL.prototype, "search", {
+    Object.defineProperty(URL.prototype, "href", {
         get: function () {
-            return this.query ? ("?" + qs.stringify(this.query)) : undefined;
+            return this.toString();
         },
         set: function (value) {
-            this.query = value ? qs.parse(value, {
-                ignoreQueryPrefix: true
-            }) : null;
+            this.parse(value);
         },
         enumerable: true,
         configurable: true
     });
     URL.prototype.toString = function () {
         var href = this.protocol || "";
-        if (this.slashes)
-            href += "//";
-        if (this.auth)
-            href += this.auth + "@";
-        if (this.host)
-            href += this.host;
-        if (this.path)
-            href += this.path;
-        if (this.hash)
-            href += this.hash;
+        this[slashes] && (href += "//");
+        this.auth && (href += this.auth + "@");
+        this.host && (href += this.host);
+        this.path && (href += this.path);
+        this.hash && (href += this.hash);
         return href;
     };
     URL.prototype.toJSON = function () {
         return this.toString();
     };
     URL.prototype[inspect] = function () {
-        var res = new (function URL() { });
+        var url = new (function URL() { });
         for (var _i = 0, UrlProps_1 = UrlProps; _i < UrlProps_1.length; _i++) {
             var prop = UrlProps_1[_i];
-            res[prop] = this[prop];
+            url[prop] = this[prop];
         }
-        return res;
+        return url;
     };
+    __decorate([
+        enumerable
+    ], URL.prototype, "protocol", null);
+    __decorate([
+        enumerable
+    ], URL.prototype, "port", null);
+    __decorate([
+        enumerable
+    ], URL.prototype, "pathname", null);
+    __decorate([
+        enumerable
+    ], URL.prototype, "host", null);
+    __decorate([
+        enumerable
+    ], URL.prototype, "search", null);
+    __decorate([
+        enumerable
+    ], URL.prototype, "hash", null);
+    __decorate([
+        enumerable
+    ], URL.prototype, "origin", null);
+    __decorate([
+        enumerable
+    ], URL.prototype, "href", null);
     return URL;
 }());
 exports.URL = URL;

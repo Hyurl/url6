@@ -38,7 +38,7 @@ console.log(url);
 - `url.host: string`
 - `url.hostname: string` without trailing `port` number.
 - `url.port: number`
-- `url.origin: string`
+- `url.origin: string` readonly.
 - `url.path: string`
 - `url.pathname: string` without trailing `search` string.
 - `url.search: string`
@@ -47,10 +47,6 @@ console.log(url);
 - `url.hash: string`
 - `url.toString()` same as `url.href`.
 - `url.toJSON()` same as `url.toString()`.
-
-If any of these properties is not defined, it's value would be `undefined` 
-(`url.query` would be `null`) or an empty string, and if the value is 
-changed, other related properties will be modified as well.
 
 This module is meant to bring some features from Node.js 8.0+ to Node.js 6.X 
 or even lower versions, it cannot be run in browser, use native `URL` instead.
