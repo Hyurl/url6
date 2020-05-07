@@ -161,7 +161,7 @@ export class URL {
         this[hash] = value;
     }
 
-    get query(): { [key: string]: string } {
+    get query(): qs.ParsedQs {
         return this[query];
     }
     set query(value) {

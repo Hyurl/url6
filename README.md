@@ -1,6 +1,6 @@
 # URL6
 
-**A more practical URL parser for Node.js that conbines new and lagacy APIs.**
+**A more practical URL parser for Node.js that combines new and legacy APIs.**
 
 ## Install
 
@@ -31,7 +31,7 @@ console.log(url);
 - `new URL(input?: string)`
 - `url.href: string`
 - `url.protocol: string` with trailing `:`.
-- `url.slashes: boolean` wheter `//` appears after the `protocol`.
+- `url.slashes: boolean` whether `//` appears after the `protocol`.
 - `url.auth: string`
 - `url.username: string`
 - `url.password: string`
